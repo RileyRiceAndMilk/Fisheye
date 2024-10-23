@@ -1,14 +1,17 @@
-async function fetchPhotographers() {
-    const response = await fetch('data/photographers.json');
-    const data = await response.json();
-    return data.photographers || [];
+import { fetchPhotographers, fetchMedia } from './functionfetch.js';
+
+async function displayData() {
+    try {
+        const photographers = await fetchPhotographers();
+        const media = await fetchMedia();
+        console.log('Photographers:', photographers);
+        console.log('Media:', media);
+    } catch (error) {
+        console.error('Erreur lors du fetch des données:', error);
+    }
 }
 
-async function fetchMedia() {
-    const response = await fetch('data/photographers.json');
-    const data = await response.json();
-    return data.media || [];
-}
+displayData();
 
 async function displayPhotographer(photographerId) {
     const photographers = await fetchPhotographers();
