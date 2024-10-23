@@ -1,4 +1,4 @@
-.logo-link {
+.logo {
     width: 200px; 
     height: auto; 
     margin-left: 50px; 
@@ -23,7 +23,7 @@ main {
 header {
     display: flex;
     justify-content: left; 
-    padding: 140px;
+    padding: 20px;
 }
 
 header .logo {
