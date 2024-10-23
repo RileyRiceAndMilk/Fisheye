@@ -126,16 +126,16 @@ async function displayPhotographer(photographerId) {
             let media;
             if (mediaItem.image) {
                 media = document.createElement('img');
-                media.src = `Sample Photos/${photographer.id}/${mediaItem.image}`;
+                media.src = `${photographer.id}/${mediaItem.image}`;
                 media.alt = mediaItem.title || 'Media overview';
                 media.dataset.src = `${photographer.id}/${mediaItem.image}`;
                 media.setAttribute('aria-label', mediaItem.title || 'Untitled media');
             } else {
                 media = document.createElement('video');
-                media.src = `Sample Photos/${photographer.id}/${mediaItem.video}`;
+                media.src = `${photographer.id}/${mediaItem.video}`;
                 media.controls = true;
                 media.alt = mediaItem.title || 'Media overview';
-                media.dataset.src = `Sample Photos/${photographer.id}/${mediaItem.video}`;
+                media.dataset.src = `${photographer.id}/${mediaItem.video}`;
                 media.setAttribute('aria-label', mediaItem.title || 'Untitled media');
             }
 
@@ -372,8 +372,8 @@ function openLightbox(index, mediaItems, photographerId) {
     const lightboxMedia = document.createElement(mediaItems[currentIndex].image ? 'img' : 'video');
     lightboxMedia.className = 'lightbox-media';
     lightboxMedia.src = mediaItems[currentIndex].image
-        ? `Sample Photos/${photographerId}/${mediaItems[currentIndex].image}`
-        : `Sample Photos/${photographerId}/${mediaItems[currentIndex].video}`;
+        ? `${photographerId}/${mediaItems[currentIndex].image}`
+        : `${photographerId}/${mediaItems[currentIndex].video}`;
 
     if (mediaItems[currentIndex].image) {
         lightboxMedia.alt = mediaItems[currentIndex].title || 'Media Overview'; 
@@ -450,8 +450,8 @@ function openLightbox(index, mediaItems, photographerId) {
         const newMedia = document.createElement(mediaItems[currentIndex].image ? 'img' : 'video');
         newMedia.className = 'lightbox-media';
         newMedia.src = mediaItems[currentIndex].image
-            ? `Sample Photos/${photographerId}/${mediaItems[currentIndex].image}`
-            : `Sample Photos/${photographerId}/${mediaItems[currentIndex].video}`;
+            ? `${photographerId}/${mediaItems[currentIndex].image}`
+            : `${photographerId}/${mediaItems[currentIndex].video}`;
     
         if (mediaItems[currentIndex].image) {
             newMedia.alt = mediaItems[currentIndex].title || 'Media Overview'; 
