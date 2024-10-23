@@ -1,4 +1,4 @@
-.logo {
+.logo-link {
     width: 200px; 
     height: auto; 
     margin-left: 50px; 
@@ -463,5 +463,8 @@ textarea {
 .thank-you-message button.close-thank-you:hover {
     background-color: #C73636;; 
 }
+
+
+
 
 
