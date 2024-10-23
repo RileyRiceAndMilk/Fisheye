@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <link href="css/photographer.css" rel="stylesheet" type="text/css" />
+    <meta charset="utf-8">
+    <link rel="icon" type="image/png" href="assets/favicon.png">
+    <link href="https://fonts.googleapis.com/css?family=DM+Sans&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>Fisheye - photographe</title>
+</head>
+<body>
+    <header>
+        <a href="index.html" class="logo-link">
+            <img src="assets/images/logo.png" class="logo" alt="Fisheye Home Page" />
+        </a>
+    </header>
+    
+    
+    <main id="main">
+        <div class="photograph-header">
+            <button class="contact_button" onclick="displayModal()" aria-label="Open the contact form">Contactez-moi</button>
+        </div>
+        <div class="media-container" id="media-container"></div>
+    </main>
+    
+    <div id="contact_modal" class="modal">
+        <div class="modal-content">
+            <header>
+                <h2>Contactez-moi</h2>
+                <img src="assets/icons/close.svg" class="close" onclick="closeModal()" alt="close contact form" />
+            </header>
+        </div>
+    </div>
+
+    <div id="lightbox" class="lightbox" style="display: none;">
+        <span class="close" onclick="closeLightbox()" aria-label="close dialog">&times;</span>
+        <button class="prev" onclick="changeMedia(-1)" aria-label="previous image">&#10094;</button>
+        <img class="lightbox-content" id="lightbox-image" alt="Image Preview" />
+        <button class="next" onclick="changeMedia(1)" aria-label="next image">&#10095;</button>
+    </div>
+
+    <script src="/scripts/pages/photographer.js"></script>
+    <script src="/scripts/utils/contactForm.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
