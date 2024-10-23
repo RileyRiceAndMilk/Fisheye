@@ -128,7 +128,7 @@ async function displayPhotographer(photographerId) {
                 media = document.createElement('img');
                 media.src = `Sample Photos/${photographer.id}/${mediaItem.image}`;
                 media.alt = mediaItem.title || 'Media overview';
-                media.dataset.src = `Sample Photos/${photographer.id}/${mediaItem.image}`;
+                media.dataset.src = `${photographer.id}/${mediaItem.image}`;
                 media.setAttribute('aria-label', mediaItem.title || 'Untitled media');
             } else {
                 media = document.createElement('video');
@@ -473,4 +473,6 @@ function openLightbox(index, mediaItems, photographerId) {
 const params = new URLSearchParams(window.location.search);
 const photographerId = parseInt(params.get("id"));
 displayPhotographer(photographerId);
+
+
 
