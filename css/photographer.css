@@ -23,7 +23,7 @@ main {
 header {
     display: flex;
     justify-content: left; 
-    padding: 20px;
+    padding: 140px;
 }
 
 header .logo {
