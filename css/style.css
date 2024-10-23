@@ -1,0 +1,93 @@
+
+body {
+    font-family: "DM Sans", sans-serif;
+    margin: 0;
+}
+
+
+* {
+    text-decoration: none; 
+}
+.skip-link {
+    position: absolute;
+    left: -9999px; 
+}
+
+header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    height: 90px;
+}
+
+h1 {
+    color: #901C1C;
+    margin-right: 100px;
+}
+
+.logo {
+    height: 50px;
+    margin-left: 100px;
+}
+
+.photographer_section {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 70px;
+    margin-top: 100px;
+}
+
+.photographer_section article {
+    justify-self: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.photographer_section article h2 {
+    color: #D3573C;
+    font-size: 36px;
+    Line-height: 46px; 
+}
+
+.photographer-card h2 {
+    color: #333; 
+}
+
+.photographer-card .tagline {
+    color: #666; 
+    Size: 10px; 
+    Line-height: 13px; 
+}
+
+.photographer-card .location {
+    color: #901C1C; 
+    Size: 13px; 
+    Line-height: 16px; 
+
+}
+
+.photographer-card .price {
+    color: #757575;
+    Size: 9px; 
+    Line-height: 11px; 
+}
+
+.photographer-portrait {
+    width: 200px; 
+    height: 200px; 
+    border-radius: 50%;
+}
+
+
+
+
+
+
+
+
+
+
+
