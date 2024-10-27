@@ -118,14 +118,14 @@ async function displayPhotographer(photographerId) {
                 media.src = `${photographer.id}/${mediaItem.image}`;
                 media.alt = mediaItem.title || 'Media overview';
                 media.setAttribute('aria-label', mediaItem.title || 'Untitled media');
-                media.setAttribute('tabindex', '9');
+                media.setAttribute('tabindex', '0'); 
             } else {
                 media = document.createElement('video');
                 media.src = `${photographer.id}/${mediaItem.video}`;
                 media.controls = true;
                 media.alt = mediaItem.title || 'Media overview';
                 media.setAttribute('aria-label', mediaItem.title || 'Untitled media');
-                media.setAttribute('tabindex', '9');
+                media.setAttribute('tabindex', '0'); 
             }
 
             media.classList.add('media');
@@ -133,7 +133,7 @@ async function displayPhotographer(photographerId) {
 
             const mediaTitleAndLike = document.createElement('div');
             mediaTitleAndLike.className = 'media-title-and-like';
-            mediaTitleAndLike.setAttribute('tabindex', '9');
+            mediaTitleAndLike.setAttribute('tabindex', '0');
 
             const mediaTitle = document.createElement('div');
             mediaTitle.className = 'media-title';
@@ -161,6 +161,19 @@ async function displayPhotographer(photographerId) {
             mediaElement.appendChild(mediaContent);
             mediaContainer.appendChild(mediaElement);
 
+            
+            media.addEventListener('click', () => {
+                openLightbox(mediaItems.indexOf(mediaItem), mediaItems, photographer.id);
+            });
+
+            
+            media.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    openLightbox(mediaItems.indexOf(mediaItem), mediaItems, photographer.id);
+                }
+            });
+
             likeButton.addEventListener('click', () => {
                 const liked = likeIcon.classList.contains('fas');
                 let likeCountValue = parseInt(likeCount.textContent, 10);
@@ -180,10 +193,6 @@ async function displayPhotographer(photographerId) {
                 likeCount.textContent = likeCountValue;
                 updateTotalLikes(totalLikes);
                 likeButton.setAttribute('aria-label', liked ? 'Ne plus aimer ce média' : 'Aimer ce média');
-            });
-
-            media.addEventListener('click', () => {
-                openLightbox(mediaItems.indexOf(mediaItem), mediaItems, photographer.id);
             });
         });
 
@@ -234,5 +243,7 @@ let currentIndex = 0;
 const params = new URLSearchParams(window.location.search);
 const photographerId = parseInt(params.get("id"));
 displayPhotographer(photographerId);
+
+
 
 
