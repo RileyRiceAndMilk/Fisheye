@@ -1,3 +1,7 @@
+let focusableElementsString = 'h2, p, input, textarea, button'; 
+let focusableElements;
+let firstFocusableElement;
+let lastFocusableElement;
 
 function openModal(photographerName) {
     const modal = document.getElementById('contact_modal');
@@ -5,10 +9,10 @@ function openModal(photographerName) {
 
     const modalContent = `
         <header>
-            <h2 id="modal-title">Contactez-moi</h2>
-            <img src="assets/icons/close.svg" class="close" onclick="closeModal()" alt="Fermer" aria-label="close contact form">
+            <h2 id="modal-title" tabindex="0">Contactez-moi</h2>
+            <img src="assets/icons/close.svg" class="close" onclick="closeModal()" alt="Fermer" aria-label="close contact form" tabindex="0" onkeydown="handleCloseKeydown(event)"> <!-- Ajout de l'événement keydown -->
         </header>
-        <p class="photographer-name-modal">${photographerName}</p>
+        <p class="photographer-name-modal" tabindex="0">${photographerName}</p> <!-- Ajout d'attribut tabindex -->
         <form id="contact-form" aria-labelledby="modal-title">
             <div>
                 <label for="prenom">Prénom</label>
@@ -35,11 +39,60 @@ function openModal(photographerName) {
     `;
 
     modal.innerHTML = modalContent;
+
+    // Gestion du focus
+    focusableElements = modal.querySelectorAll(focusableElementsString);
+    firstFocusableElement = focusableElements[0];
+    lastFocusableElement = focusableElements[focusableElements.length - 1];
+
+    firstFocusableElement.focus(); // Met le focus sur le premier élément
+
+    // Ajout d'un écouteur d'événements pour piéger le focus
+    modal.addEventListener('keydown', trapFocus);
+
+    // Ajout d'un écouteur d'événements pour détecter la touche Échap
+    document.addEventListener('keydown', handleEscapeKey);
 }
 
 function closeModal() {
     const modal = document.getElementById('contact_modal');
     modal.style.display = 'none';
+
+    // Suppression des écouteurs d'événements lorsque la modale est fermée
+    modal.removeEventListener('keydown', trapFocus);
+    document.removeEventListener('keydown', handleEscapeKey);
+}
+
+function handleCloseKeydown(event) {
+    if (event.key === 'Enter') {
+        closeModal(); // Ferme la modale lorsque la touche Entrée est pressée
+    }
+}
+
+function handleEscapeKey(event) {
+    if (event.key === 'Escape') {
+        closeModal(); // Ferme la modale lorsque la touche Échap est pressée
+    }
+}
+
+function trapFocus(e) {
+    // Vérifier si l'utilisateur appuie sur la touche Tab
+    if (e.key === 'Tab') {
+        // Si la touche Shift est pressée, naviguer en arrière
+        if (e.shiftKey) {
+            // Si le focus est sur le premier élément, revenir au dernier élément
+            if (document.activeElement === firstFocusableElement) {
+                e.preventDefault();
+                lastFocusableElement.focus();
+            }
+        } else {
+            // Si le focus est sur le dernier élément, revenir au premier élément
+            if (document.activeElement === lastFocusableElement) {
+                e.preventDefault();
+                firstFocusableElement.focus();
+            }
+        }
+    }
 }
 
 function submitForm() {
@@ -68,12 +121,10 @@ function submitForm() {
     if (!email) {
         document.getElementById('email-error').textContent = 'Ce champ est requis.';
         valid = false;
-    }
-    else if (!/^[^\s@]+@(gmail|hotmail|yahoo|outlook)\.(com|fr|net|org)$/i.test(email)) {
+    } else if (!/^[^\s@]+@(gmail|hotmail|yahoo|outlook)\.(com|fr|net|org)$/i.test(email)) {
         document.getElementById('email-error').textContent = 'Veuillez entrer un email valide';
         valid = false;
-    }
-    else {
+    } else {
         document.getElementById('email-error').textContent = '';
     }
 
