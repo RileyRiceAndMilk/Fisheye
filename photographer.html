@@ -11,9 +11,9 @@
 </head>
 <body>
     <header>
-        <a href="index.html" class="logo">
+        <a href="index.html" class="logo" aria-label="Retour à la page d'accueil" tabindex="1">
             <img src="assets/images/logo.png" class="logo" alt="Fisheye Home Page" />
-        </a>
+        </a>             
     </header>
     
     
@@ -25,7 +25,7 @@
     </main>
     
     <div id="contact_modal" class="modal">
-        <div class="modal-content">
+        <div class="modal-content" tabindex="0">
             <header>
                 <h2>Contactez-moi</h2>
                 <img src="assets/icons/close.svg" class="close" onclick="closeModal()" alt="close contact form" />
@@ -42,8 +42,10 @@
 
     <script type="module" src="scripts/pages/photographer.js"></script>
     <script src="scripts/utils/contactForm.js"></script>
+    <script src="scripts/utils/lightbox.js"></script>
 </body>
 </html>
+
 
 
 
