@@ -13,18 +13,18 @@
 </head>
 <body>
     <header>
-        <a href="index.html" class="logo-link">
+        <a href="index.html" class="logo-link" tabindex="1">
             <img src="assets/images/logo.png" class="logo" alt="Fisheye Home Page" />
-        </a>
-        <h1 id="page-title">Nos photographes</h1>
+        </a>        
+        <h1 id="page-title" tabindex="2">Nos photographes</h1>
     </header>
 
     <main id="main" aria-labelledby="page-title">
         <div class="photographer_section"></div>
     </main>
 
-    <script src="scripts/templates/photographer.js"></script>
-    <script src="scripts/pages/index.js"></script>
+    <script type="module" src="scripts/templates/photographer.js"></script>
+    <script type="module" src="scripts/pages/index.js"></script>
 </body>
 </html>
 
