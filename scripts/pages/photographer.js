@@ -150,10 +150,21 @@ async function displayPhotographer(photographerId) {
             likeButton.className = 'like-button';
             likeButton.setAttribute('role', 'img');
             likeButton.setAttribute('aria-label', 'Likes');
+            likeButton.setAttribute('tabindex', '0'); 
 
             const likeIcon = document.createElement('i');
             likeIcon.className = 'far fa-heart';
             likeButton.appendChild(likeIcon);
+
+            
+            likeButton.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    toggleLike(likeButton, likeIcon, likeCount);
+                }
+            });
+
+            likeButton.addEventListener('click', () => toggleLike(likeButton, likeIcon, likeCount));
 
             mediaLikes.append(likeCount, likeButton);
             mediaTitleAndLike.append(mediaTitle, mediaLikes);
@@ -161,38 +172,15 @@ async function displayPhotographer(photographerId) {
             mediaElement.appendChild(mediaContent);
             mediaContainer.appendChild(mediaElement);
 
-            
             media.addEventListener('click', () => {
                 openLightbox(mediaItems.indexOf(mediaItem), mediaItems, photographer.id);
             });
 
-            
             media.addEventListener('keydown', (event) => {
                 if (event.key === 'Enter') {
                     event.preventDefault();
                     openLightbox(mediaItems.indexOf(mediaItem), mediaItems, photographer.id);
                 }
-            });
-
-            likeButton.addEventListener('click', () => {
-                const liked = likeIcon.classList.contains('fas');
-                let likeCountValue = parseInt(likeCount.textContent, 10);
-
-                if (!liked) {
-                    likeCountValue++;
-                    likeIcon.classList.remove('far');
-                    likeIcon.classList.add('fas');
-                    totalLikes++;
-                } else {
-                    likeCountValue--;
-                    likeIcon.classList.remove('fas');
-                    likeIcon.classList.add('far');
-                    totalLikes--;
-                }
-
-                likeCount.textContent = likeCountValue;
-                updateTotalLikes(totalLikes);
-                likeButton.setAttribute('aria-label', liked ? 'Ne plus aimer ce média' : 'Aimer ce média');
             });
         });
 
@@ -220,6 +208,27 @@ async function displayPhotographer(photographerId) {
     }
 }
 
+function toggleLike(likeButton, likeIcon, likeCount) {
+    const liked = likeIcon.classList.contains('fas');
+    let likeCountValue = parseInt(likeCount.textContent, 10);
+
+    if (!liked) {
+        likeCountValue++;
+        likeIcon.classList.remove('far');
+        likeIcon.classList.add('fas');
+        totalLikes++;
+    } else {
+        likeCountValue--;
+        likeIcon.classList.remove('fas');
+        likeIcon.classList.add('far');
+        totalLikes--;
+    }
+
+    likeCount.textContent = likeCountValue;
+    updateTotalLikes(totalLikes);
+    likeButton.setAttribute('aria-label', liked ? 'Ne plus aimer ce média' : 'Aimer ce média');
+}
+
 function updateTotalLikes(likes) {
     const totalLikesCount = document.getElementById('total-likes-count');
     totalLikesCount.textContent = likes;
@@ -243,7 +252,5 @@ let currentIndex = 0;
 const params = new URLSearchParams(window.location.search);
 const photographerId = parseInt(params.get("id"));
 displayPhotographer(photographerId);
-
-
 
 
