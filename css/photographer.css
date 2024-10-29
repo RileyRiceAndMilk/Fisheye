@@ -489,6 +489,19 @@ textarea {
         gap: 50px; 
         margin-top: 80px;
     }
+    .media-title-and-like {
+        display: flex; 
+        align-items: center; 
+        justify-content: flex-start; 
+        gap: 150px;
+        padding: 5px 0; 
+    }
+    
+
+    .media-item {
+        margin-bottom: 5px; 
+    }
+    
 }
 @media (max-width: 768px) {
     .photograph-header {
@@ -519,15 +532,29 @@ textarea {
         display: grid; 
         grid-template-columns: 1fr;
         gap: 20px; 
-        margin-top: 50px; 
-        max-width: 100%; 
+        margin: 50px auto; 
+        max-width: 800px; 
         padding: 0 20px; 
+        justify-items: center; 
+        align-items: center; 
     }
+    
 
     .media-title-and-like {
         flex-direction: column; 
         align-items: center; 
         text-align: center; 
+        gap: 5px;
+    }
+
+    .media-title {
+        font-size: 20px; 
+        line-height: 28px; 
+    }
+
+    .media-likes {
+        font-size: 20px;
+        line-height: 28px;
     }
 
     .sort-container {
