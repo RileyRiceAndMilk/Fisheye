@@ -40,17 +40,17 @@ function openModal(photographerName) {
 
     modal.innerHTML = modalContent;
 
-    // Gestion du focus
+   
     focusableElements = modal.querySelectorAll(focusableElementsString);
     firstFocusableElement = focusableElements[0];
     lastFocusableElement = focusableElements[focusableElements.length - 1];
 
-    firstFocusableElement.focus(); // Met le focus sur le premier élément
+    firstFocusableElement.focus(); 
 
-    // Ajout d'un écouteur d'événements pour piéger le focus
+   
     modal.addEventListener('keydown', trapFocus);
 
-    // Ajout d'un écouteur d'événements pour détecter la touche Échap
+    
     document.addEventListener('keydown', handleEscapeKey);
 }
 
@@ -58,35 +58,31 @@ function closeModal() {
     const modal = document.getElementById('contact_modal');
     modal.style.display = 'none';
 
-    // Suppression des écouteurs d'événements lorsque la modale est fermée
+    
     modal.removeEventListener('keydown', trapFocus);
     document.removeEventListener('keydown', handleEscapeKey);
 }
 
 function handleCloseKeydown(event) {
     if (event.key === 'Enter') {
-        closeModal(); // Ferme la modale lorsque la touche Entrée est pressée
+        closeModal(); 
     }
 }
 
 function handleEscapeKey(event) {
     if (event.key === 'Escape') {
-        closeModal(); // Ferme la modale lorsque la touche Échap est pressée
+        closeModal(); 
     }
 }
 
 function trapFocus(e) {
-    // Vérifier si l'utilisateur appuie sur la touche Tab
     if (e.key === 'Tab') {
-        // Si la touche Shift est pressée, naviguer en arrière
         if (e.shiftKey) {
-            // Si le focus est sur le premier élément, revenir au dernier élément
             if (document.activeElement === firstFocusableElement) {
                 e.preventDefault();
                 lastFocusableElement.focus();
             }
         } else {
-            // Si le focus est sur le dernier élément, revenir au premier élément
             if (document.activeElement === lastFocusableElement) {
                 e.preventDefault();
                 firstFocusableElement.focus();
