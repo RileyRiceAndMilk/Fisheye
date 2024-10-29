@@ -81,6 +81,18 @@ h1 {
     border-radius: 50%;
 }
 
+@media (max-width: 768px) { 
+    .photographer_section {
+        display: grid;
+        grid-template-columns: 1fr; 
+        gap: 30px; 
+        margin-top: 50px; 
+        justify-items: center; 
+        align-items: center; 
+    }
+    
+}
+
 
 
 
