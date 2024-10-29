@@ -1,8 +1,20 @@
-.logo {
-    width: 200px; 
-    height: auto; 
-    margin-left: 20px; 
+.header {
+    display: flex;
+    justify-content: flex-start; 
+    align-items: center; 
+    padding: 20px;
+    max-width: 1200px; 
+    margin: 0 auto;
 }
+
+.logo {
+    display: block; 
+    width: 200px; 
+    height: 50px; 
+    margin: 0; 
+}
+
+
 
 main {
     display: flex;
@@ -18,16 +30,6 @@ main {
     max-width: 1200px; 
     padding: 20px; 
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
-}
-
-header {
-    display: flex;
-    justify-content: left; 
-    padding: 20px;
-}
-
-header .logo {
-    margin-right: auto; 
 }
 
 .photograph-header {
@@ -75,6 +77,22 @@ header .logo {
 
 .photographer-tagline {
     font-size: 18px;
+}
+
+.contact_button {
+    font-size: 20px;
+    font-weight: bold;
+    color: white;
+    padding: 11px;
+    width: 170px;
+    height: 70px;
+    border: none;
+    background-color: #901C1C;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 35%;
+    margin-top: 10px;
+    align-self: center;
 }
 
 .photographer-portrait {
@@ -137,28 +155,14 @@ header .logo {
     transform: scale(1.2);
 }
 
-.contact_button {
-    font-size: 20px;
-    font-weight: bold;
-    color: white;
-    padding: 11px;
-    width: 170px;
-    height: 70px;
-    border: none;
-    background-color: #901C1C;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-right: 35%;
-    margin-top: 10px;
-    align-self: center;
-}
-
 .media_section {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 70px;
+    display: grid; 
+    grid-template-columns: repeat(3, 1fr); 
     margin-top: 100px;
     z-index: 1; 
+    max-width: 1200px; 
+    width: 100%; 
+    padding: 0 20px; 
 }
 
 .modal-header {
@@ -183,9 +187,11 @@ header .logo {
 .sort-container {
     display: flex;
     align-items: center; 
-    justify-content: flex-start;
-    margin: 10px 0; 
-    margin-right: 990px;
+    justify-content: flex-start; 
+    margin: 10px auto; 
+    max-width: 1200px; 
+    width: 100%; 
+    padding: 0 20px; 
 }
 
 
@@ -224,14 +230,13 @@ header .logo {
     border-radius: 2px; 
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
     position: fixed; 
-    bottom: 0;
-    right: 30px; 
-    width: 100%; 
+    bottom: 0; 
+    right: 50px; 
+    width: auto; 
     max-width: 250px;  
     z-index: 1000; 
     box-sizing: border-box;
 }
-
 
 .total-likes,
 .price {
@@ -474,8 +479,62 @@ textarea {
     right: 6px;
 }
 
-
+@media (max-width: 1024px) {
+    .sort-container {
+        justify-content: center; 
+        margin: 10px auto; 
+    }
+    .media_section {
+        grid-template-columns: repeat(2, 1fr); 
+        gap: 50px; 
+        margin-top: 80px;
+    }
+}
 @media (max-width: 768px) {
+    .photograph-header {
+        flex-direction: column; 
+        text-align: center; 
+        align-items: center;
+    }
+
+    .header-content {
+        flex-direction: column;
+        align-items: center;
+        text-align: center; 
+        margin-bottom: 10px; 
+    }
+
+    .photographer-info {
+        align-items: center; 
+        margin-left: 0; 
+        text-align: center;
+    }
+
+    .contact_button {
+        margin-right: 0; 
+        margin: 10px auto; 
+    }
+
+    .media_section {
+        display: grid; 
+        grid-template-columns: 1fr;
+        gap: 20px; 
+        margin-top: 50px; 
+        max-width: 100%; 
+        padding: 0 20px; 
+    }
+
+    .media-title-and-like {
+        flex-direction: column; 
+        align-items: center; 
+        text-align: center; 
+    }
+
+    .sort-container {
+        justify-content: center; 
+        margin: 10px auto; 
+    }
+
     .lightbox-close {
         font-size: 24px; 
     }
@@ -485,8 +544,3 @@ textarea {
         font-size: 30px; 
     }
 }
-
-
-
-
-
