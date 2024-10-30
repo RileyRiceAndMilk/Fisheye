@@ -1,4 +1,6 @@
-import { fetchPhotographers, fetchMedia, listenForSpaceToScroll, enableEnterClick } from './functionfetch.js';
+import { fetchPhotographers, fetchMedia } from './functionfetch.js';
+
+let totalLikes = 0; 
 
 async function displayPhotographer(photographerId) {
     const photographers = await fetchPhotographers();
@@ -88,7 +90,7 @@ async function displayPhotographer(photographerId) {
     mainElement.insertBefore(sortContainer, mediaContainer);
 
     const photographerMedia = media.filter(m => m.photographerId === photographerId);
-    let totalLikes = 0;
+    totalLikes = photographerMedia.reduce((sum, item) => sum + item.likes, 0); 
 
     displayMedia(photographerMedia);
 
@@ -98,114 +100,105 @@ async function displayPhotographer(photographerId) {
         const sortedMedia = sortMedia(photographerMedia, this.value);
         displayMedia(sortedMedia);
     });
+}
 
-    function displayMedia(mediaItems) {
-        mediaContainer.innerHTML = '';
-        totalLikes = 0;
+function displayMedia(mediaItems) {
+    const mediaContainer = document.querySelector('.media_section');
+    mediaContainer.innerHTML = '';
 
-        mediaItems.forEach(mediaItem => {
-            totalLikes += mediaItem.likes;
+    mediaItems.forEach(mediaItem => {
+        const mediaElement = document.createElement('div');
+        mediaElement.classList.add('media-item');
 
-            const mediaElement = document.createElement('div');
-            mediaElement.classList.add('media-item');
+        const mediaContent = document.createElement('div');
+        mediaContent.classList.add('media-content');
 
-            const mediaContent = document.createElement('div');
-            mediaContent.classList.add('media-content');
+        let media;
+        if (mediaItem.image) {
+            media = document.createElement('img');
+            media.src = `${mediaItem.photographerId}/${mediaItem.image}`;
+            media.alt = mediaItem.title || 'Media overview';
+            media.setAttribute('aria-label', mediaItem.title || 'Untitled media');
+            media.setAttribute('tabindex', '0'); 
+        } else {
+            media = document.createElement('video');
+            media.src = `${mediaItem.photographerId}/${mediaItem.video}`;
+            media.controls = true;
+            media.alt = mediaItem.title || 'Media overview';
+            media.setAttribute('aria-label', mediaItem.title || 'Untitled media');
+            media.setAttribute('tabindex', '0'); 
+        }
 
-            let media;
-            if (mediaItem.image) {
-                media = document.createElement('img');
-                media.src = `${photographer.id}/${mediaItem.image}`;
-                media.alt = mediaItem.title || 'Media overview';
-                media.setAttribute('aria-label', mediaItem.title || 'Untitled media');
-                media.setAttribute('tabindex', '0'); 
-            } else {
-                media = document.createElement('video');
-                media.src = `${photographer.id}/${mediaItem.video}`;
-                media.controls = true;
-                media.alt = mediaItem.title || 'Media overview';
-                media.setAttribute('aria-label', mediaItem.title || 'Untitled media');
-                media.setAttribute('tabindex', '0'); 
-            }
+        media.classList.add('media');
+        mediaContent.appendChild(media);
 
-            media.classList.add('media');
-            mediaContent.appendChild(media);
+        const mediaTitleAndLike = document.createElement('div');
+        mediaTitleAndLike.className = 'media-title-and-like';
+        mediaTitleAndLike.setAttribute('tabindex', '0');
 
-            const mediaTitleAndLike = document.createElement('div');
-            mediaTitleAndLike.className = 'media-title-and-like';
-            mediaTitleAndLike.setAttribute('tabindex', '0');
+        const mediaTitle = document.createElement('div');
+        mediaTitle.className = 'media-title';
+        mediaTitle.textContent = mediaItem.title;
 
-            const mediaTitle = document.createElement('div');
-            mediaTitle.className = 'media-title';
-            mediaTitle.textContent = mediaItem.title;
+        const mediaLikes = document.createElement('div');
+        mediaLikes.className = 'media-likes';
 
-            const mediaLikes = document.createElement('div');
-            mediaLikes.className = 'media-likes';
+        const likeCount = document.createElement('span');
+        likeCount.className = 'like-count';
+        likeCount.textContent = mediaItem.likes;
 
-            const likeCount = document.createElement('span');
-            likeCount.className = 'like-count';
-            likeCount.textContent = mediaItem.likes;
+        const likeButton = document.createElement('span');
+        likeButton.className = 'like-button';
+        likeButton.setAttribute('role', 'img');
+        likeButton.setAttribute('aria-label', 'Likes');
+        likeButton.setAttribute('tabindex', '0'); 
 
-            const likeButton = document.createElement('span');
-            likeButton.className = 'like-button';
-            likeButton.setAttribute('role', 'img');
-            likeButton.setAttribute('aria-label', 'Likes');
-            likeButton.setAttribute('tabindex', '0'); 
+        const likeIcon = document.createElement('i');
+        likeIcon.className = 'far fa-heart';
+        likeButton.appendChild(likeIcon);
 
-            const likeIcon = document.createElement('i');
-            likeIcon.className = 'far fa-heart';
-            likeButton.appendChild(likeIcon);
+        likeButton.addEventListener('click', () => toggleLike(likeButton, likeIcon, likeCount));
 
-            
-            likeButton.addEventListener('keydown', (event) => {
-                if (event.key === 'Enter') {
-                    event.preventDefault();
-                    toggleLike(likeButton, likeIcon, likeCount);
-                }
-            });
+        mediaLikes.append(likeCount, likeButton);
+        mediaTitleAndLike.append(mediaTitle, mediaLikes);
+        mediaContent.appendChild(mediaTitleAndLike);
+        mediaElement.appendChild(mediaContent);
+        mediaContainer.appendChild(mediaElement);
 
-            likeButton.addEventListener('click', () => toggleLike(likeButton, likeIcon, likeCount));
-
-            mediaLikes.append(likeCount, likeButton);
-            mediaTitleAndLike.append(mediaTitle, mediaLikes);
-            mediaContent.appendChild(mediaTitleAndLike);
-            mediaElement.appendChild(mediaContent);
-            mediaContainer.appendChild(mediaElement);
-
-            media.addEventListener('click', () => {
-                openLightbox(mediaItems.indexOf(mediaItem), mediaItems, photographer.id);
-            });
-
-            media.addEventListener('keydown', (event) => {
-                if (event.key === 'Enter') {
-                    event.preventDefault();
-                    openLightbox(mediaItems.indexOf(mediaItem), mediaItems, photographer.id);
-                }
-            });
+        media.addEventListener('click', () => {
+            openLightbox(mediaItems.indexOf(mediaItem), mediaItems, mediaItem.photographerId);
         });
 
-        const likesAndPrice = document.createElement('div');
-        likesAndPrice.className = 'likes-and-price';
-        likesAndPrice.setAttribute('tabindex', '6');
+        media.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                openLightbox(mediaItems.indexOf(mediaItem), mediaItems, mediaItem.photographerId);
+            }
+        });
+    });
 
-        const totalLikesDiv = document.createElement('div');
-        totalLikesDiv.className = 'total-likes';
+    const likesAndPrice = document.createElement('div');
+    likesAndPrice.className = 'likes-and-price';
+    likesAndPrice.setAttribute('tabindex', '6');
 
-        const likesCount = document.createElement('span');
-        likesCount.id = 'total-likes-count';
-        likesCount.textContent = totalLikes;
+    const totalLikesDiv = document.createElement('div');
+    totalLikesDiv.className = 'total-likes';
 
-        const heartIcon = document.createElement('i');
-        heartIcon.className = 'fas fa-heart';
-        totalLikesDiv.append(likesCount, heartIcon);
+    const likesCount = document.createElement('span');
+    likesCount.id = 'total-likes-count';
+    likesCount.textContent = totalLikes;
 
-        const priceDiv = document.createElement('div');
-        priceDiv.className = 'price';
-        priceDiv.textContent = `${photographer.price}€ / jour`;
+    const heartIcon = document.createElement('i');
+    heartIcon.className = 'fas fa-heart';
+    totalLikesDiv.append(likesCount, heartIcon);
 
-        likesAndPrice.append(totalLikesDiv, priceDiv);
-        mainElement.appendChild(likesAndPrice);
-    }
+    const priceDiv = document.createElement('div');
+    priceDiv.className = 'price';
+    priceDiv.textContent = `${mediaItems[0].price}€ / jour`;
+
+    likesAndPrice.append(totalLikesDiv, priceDiv);
+    const mainElement = document.getElementById('main');
+    mainElement.appendChild(likesAndPrice);
 }
 
 function toggleLike(likeButton, likeIcon, likeCount) {
@@ -246,8 +239,6 @@ function sortMedia(mediaItems, criteria) {
             return mediaItems;
     }
 }
-
-let currentIndex = 0;
 
 const params = new URLSearchParams(window.location.search);
 const photographerId = parseInt(params.get("id"));
