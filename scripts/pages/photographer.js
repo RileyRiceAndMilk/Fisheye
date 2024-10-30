@@ -158,6 +158,13 @@ function displayMedia(mediaItems) {
         likeButton.appendChild(likeIcon);
 
         likeButton.addEventListener('click', () => toggleLike(likeButton, likeIcon, likeCount));
+        
+        likeButton.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                toggleLike(likeButton, likeIcon, likeCount);
+            }
+        });
 
         mediaLikes.append(likeCount, likeButton);
         mediaTitleAndLike.append(mediaTitle, mediaLikes);
