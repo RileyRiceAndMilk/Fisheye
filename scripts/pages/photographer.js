@@ -245,3 +245,4 @@ const photographerId = parseInt(params.get("id"));
 displayPhotographer(photographerId);
 
 
+
