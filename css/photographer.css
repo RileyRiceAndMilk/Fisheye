@@ -1,3 +1,7 @@
+body {
+    overflow-x: hidden;
+}
+
 .header {
     display: flex;
     justify-content: flex-start; 
@@ -115,10 +119,13 @@ main {
 }
 
 .media-title-and-like {
-    display: flex; 
-    justify-content: space-between; 
+    display: flex;
     align-items: center;
+    justify-content: space-between;
+    max-width: 88%; 
+    margin: 0;
 }
+
 
 .media-title {
     font-size: 24px;
@@ -480,6 +487,11 @@ textarea {
 }
 
 @media (max-width: 1024px) {
+
+    body {
+        overflow-x: hidden;
+    }
+
     .sort-container {
         justify-content: center; 
         margin: 10px auto; 
