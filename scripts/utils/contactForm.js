@@ -100,19 +100,28 @@ function submitForm() {
 
     let valid = true;
 
+    const nameRegex = /^[a-zA-ZÀ-ÿ\s'-]+$/;
+
     if (!prenom) {
         document.getElementById('prenom-error').textContent = 'Ce champ est requis.';
+        valid = false;
+    } else if (!nameRegex.test(prenom)) {
+        document.getElementById('prenom-error').textContent = 'Ce champ ne doit contenir que des lettres.';
         valid = false;
     } else {
         document.getElementById('prenom-error').textContent = '';
     }
-
+    
     if (!nom) {
         document.getElementById('nom-error').textContent = 'Ce champ est requis.';
+        valid = false;
+    } else if (!nameRegex.test(nom)) {
+        document.getElementById('nom-error').textContent = 'Ce champ ne doit contenir que des lettres.';
         valid = false;
     } else {
         document.getElementById('nom-error').textContent = '';
     }
+    
 
     if (!email) {
         document.getElementById('email-error').textContent = 'Ce champ est requis.';
