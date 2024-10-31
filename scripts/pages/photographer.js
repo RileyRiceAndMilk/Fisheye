@@ -1,4 +1,4 @@
-import { fetchPhotographers, fetchMedia } from './functionfetch.js';
+import { fetchPhotographers, fetchMedia, listenForSpaceToScroll, enableEnterClick } from './functionfetch.js';
 
 let totalLikes = 0; 
 
@@ -92,17 +92,18 @@ async function displayPhotographer(photographerId) {
     const photographerMedia = media.filter(m => m.photographerId === photographerId);
     totalLikes = photographerMedia.reduce((sum, item) => sum + item.likes, 0); 
 
-    displayMedia(photographerMedia);
+
+    displayMedia(photographerMedia, photographer, mainElement);
 
     contactButton.addEventListener('click', () => openModal(photographer.name));
 
     sortSelect.addEventListener('change', function () {
         const sortedMedia = sortMedia(photographerMedia, this.value);
-        displayMedia(sortedMedia);
+        displayMedia(sortedMedia, photographer, mainElement); 
     });
 }
 
-function displayMedia(mediaItems) {
+function displayMedia(mediaItems, photographer, mainElement) {
     const mediaContainer = document.querySelector('.media_section');
     mediaContainer.innerHTML = '';
 
@@ -201,10 +202,9 @@ function displayMedia(mediaItems) {
 
     const priceDiv = document.createElement('div');
     priceDiv.className = 'price';
-    priceDiv.textContent = `${mediaItems[0].price}€ / jour`;
+    priceDiv.textContent = `${photographer.price}€ / jour`; 
 
     likesAndPrice.append(totalLikesDiv, priceDiv);
-    const mainElement = document.getElementById('main');
     mainElement.appendChild(likesAndPrice);
 }
 
