@@ -44,8 +44,7 @@ main {
     align-items: center;
     justify-content: space-between; 
     background-color: #FAFAFA;
-    width: 87%; 
-    max-width: 1200px; 
+    width: 87%;  
     margin: 0 auto; 
     padding: 20px; 
 }
@@ -170,8 +169,7 @@ main {
     justify-items: center; 
     align-items: center;
     z-index: 1; 
-    width: 87%; 
-    max-width: 1200px; 
+    width: 87%;  
     margin: 0 auto; 
 }
 
