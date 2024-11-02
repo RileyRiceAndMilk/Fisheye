@@ -2,8 +2,8 @@
 body {
     font-family: "DM Sans", sans-serif;
     margin: 0;
+    overflow-x: hidden;
 }
-
 
 * {
     text-decoration: none; 
@@ -81,14 +81,53 @@ h1 {
     border-radius: 50%;
 }
 
-@media (max-width: 768px) { 
+@media (max-width: 1300px) {
     .photographer_section {
-        display: grid;
-        grid-template-columns: 1fr; 
-        gap: 30px; 
-        margin-top: 50px; 
-        justify-items: center; 
-        align-items: center; 
+        grid-template-columns: repeat(2, 1fr); 
+        gap: 50px; 
+    }
+
+    main {
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+        height: auto;
+    }
+}
+
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        text-align: center;
+        height: auto;
+    }
+
+    main {
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+        height: auto;
+    }
+    
+    h1 {
+        margin-right: 0;
+    }
+    
+    .logo {
+        margin-left: 0;
+        margin-bottom: 20px;
+    }
+    
+    .photographer_section {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        padding: 0 10px;
+        margin-top: 30px;
+        align-items: center;
+    }
+
+    .photographer-card {
+        max-width: 90%;
     }
     
 }
