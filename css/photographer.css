@@ -499,6 +499,10 @@ textarea {
         height: auto;
     }
 
+     .photographer-info {
+        align-items: center; 
+    }
+
     .sort-container {
         justify-content: left; 
         margin: 10px auto; 
