@@ -513,7 +513,6 @@ textarea {
     .media_section {
         grid-template-columns: repeat(2, 1fr); 
         gap: 50px; 
-        align-items: none;
     }  
 
     .media-item {
