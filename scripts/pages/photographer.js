@@ -49,7 +49,7 @@ async function displayPhotographer(photographerId) {
 
     const portraitImg = document.createElement('img');
     portraitImg.className = 'photographer-portrait';
-    portraitImg.src = `Photographers ID Photos/${photographer.portrait}`;
+    portraitImg.src = `Photographie/Photographers ID Photos/${photographer.portrait}`;
     portraitImg.alt = `Portrait de ${photographer.name}`;
     photographerHeader.appendChild(portraitImg);
     portraitImg.setAttribute('tabindex', '5');
