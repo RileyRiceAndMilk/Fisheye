@@ -22,8 +22,8 @@ function openLightbox(index, mediaItems, photographerId) {
     const lightboxMedia = document.createElement(mediaItems[currentIndex].image ? 'img' : 'video');
     lightboxMedia.className = 'lightbox-media';
     lightboxMedia.src = mediaItems[currentIndex].image
-        ? `${photographerId}/${mediaItems[currentIndex].image}`
-        : `${photographerId}/${mediaItems[currentIndex].video}`;
+        ? `Photographie/${photographerId}/${mediaItems[currentIndex].image}`
+        : `Photographie/${photographerId}/${mediaItems[currentIndex].video}`;
     lightboxMedia.tabIndex = 0; 
     lightboxMedia.focus(); 
 
@@ -135,8 +135,8 @@ function openLightbox(index, mediaItems, photographerId) {
         const newMedia = document.createElement(mediaItems[currentIndex].image ? 'img' : 'video');
         newMedia.className = 'lightbox-media';
         newMedia.src = mediaItems[currentIndex].image
-            ? `${photographerId}/${mediaItems[currentIndex].image}`
-            : `${photographerId}/${mediaItems[currentIndex].video}`;
+            ? `Photographie/${photographerId}/${mediaItems[currentIndex].image}`
+            : `Photographie/${photographerId}/${mediaItems[currentIndex].video}`;
         newMedia.tabIndex = 0;
         newMedia.focus();
 
