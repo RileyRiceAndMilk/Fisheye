@@ -10,7 +10,7 @@ body {
     display: flex;
     justify-content: left;
     align-items: center;
-    width: 78%;
+    width: 87%;
 }
 
 .logo {
@@ -170,7 +170,7 @@ main {
     justify-items: center; 
     align-items: center;
     z-index: 1; 
-    width: 100%; 
+    width: 87%; 
     margin: 0 auto; 
     gap: 50px;
 }
