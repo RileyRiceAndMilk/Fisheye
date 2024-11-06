@@ -35,7 +35,7 @@ function displayPhotographers(photographers) {
 
         const cardContent = `
             <a href="photographer.html?id=${photographer.id}" aria-label="Voir le profil de ${photographer.name}">
-                <img src="Photographie/Photographers ID Photos/${photographer.portrait}" alt="Portrait de ${photographer.name}" class="photographer-portrait" tabindex="3" />
+                <img src=`Photographie/Photographers ID Photos/${photographer.portrait}` alt="Portrait de ${photographer.name}" class="photographer-portrait" tabindex="3" />
                 <h2 id="photographer-${photographer.id}">${photographer.name}</h2>
                 <p class="tagline">${photographer.tagline}</p>
                 <p class="location">${photographer.city}, ${photographer.country}</p>
