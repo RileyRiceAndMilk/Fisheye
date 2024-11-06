@@ -117,13 +117,13 @@ function displayMedia(mediaItems, photographer, mainElement) {
         let media;
         if (mediaItem.image) {
             media = document.createElement('img');
-            media.src = `${mediaItem.photographerId}/${mediaItem.image}`;
+            media.src = `Photographie/${mediaItem.photographerId}/${mediaItem.image}`;
             media.alt = mediaItem.title || 'Media overview';
             media.setAttribute('aria-label', mediaItem.title || 'Untitled media');
             media.setAttribute('tabindex', '0'); 
         } else {
             media = document.createElement('video');
-            media.src = `${mediaItem.photographerId}/${mediaItem.video}`;
+            media.src = `Photographie/${mediaItem.photographerId}/${mediaItem.video}`;
             media.controls = true;
             media.alt = mediaItem.title || 'Media overview';
             media.setAttribute('aria-label', mediaItem.title || 'Untitled media');
