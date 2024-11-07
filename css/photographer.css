@@ -28,7 +28,6 @@ main {
     align-items: center;
     justify-content: center;
     margin: 0 auto;
-    width: 87%;
 }
 
 .container {
@@ -43,16 +42,13 @@ main {
     flex-direction: row;
     align-items: center;
     justify-content: space-between; 
-    background-color: #FAFAFA;
-    width: 87%;  
-    margin: 0 auto; 
+    background-color: #FAFAFA; 
     padding: 20px; 
 }
 
 .header-content {
     display: flex;
     flex-direction: row;
-    align-items: center;
     justify-content: flex-start; 
     width: 100%;
 }
@@ -62,7 +58,6 @@ main {
     flex-direction: column;
     align-items: flex-start;
     flex: 1;
-    margin-left: 20px; 
 }
 
 .photographer-name {
@@ -95,7 +90,6 @@ main {
     background-color: #901C1C;
     border-radius: 5px;
     cursor: pointer;
-    margin-right: 35%;
     margin-top: 10px;
     align-self: center;
 }
@@ -170,7 +164,6 @@ main {
     justify-items: center; 
     align-items: center;
     z-index: 1; 
-    width: 87%; 
     margin: 0 auto; 
     gap: 50px;
 }
@@ -193,9 +186,8 @@ main {
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    margin: 10px auto;
-    width: 87%;
-    padding: 0 20px; 
+    margin: 10px 0;
+    width: 100%; 
 }
 
 
@@ -488,7 +480,7 @@ textarea {
     right: 6px;
 }
 
-@media (max-width: 1300px) {
+@media (max-width: 1380px) {
 
     body {
         overflow-x: hidden;
@@ -594,7 +586,7 @@ textarea {
         object-fit: cover;
     }
 
-   .media-title-and-like {
+    .media-title-and-like {
         flex-direction: column; 
         align-items: center; 
         text-align: center; 
