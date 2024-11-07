@@ -50,8 +50,8 @@ main {
 .header-content {
     display: flex;
     flex-direction: row;
-    justify-content: flex-start; 
-    width: 100%;
+    justify-content: flex-start;
+    width: 70%;
 }
 
 .photographer-info {
