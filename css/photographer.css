@@ -10,7 +10,7 @@ body {
     display: flex;
     justify-content: left;
     align-items: center;
-    width: 78%;
+    width: 48%;
 }
 
 .logo {
@@ -44,6 +44,7 @@ main {
     justify-content: space-between; 
     background-color: #FAFAFA; 
     padding: 20px; 
+    width: 100%;
 }
 
 .header-content {
