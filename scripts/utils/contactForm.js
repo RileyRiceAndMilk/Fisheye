@@ -10,9 +10,9 @@ function openModal(photographerName) {
     const modalContent = `
         <header>
             <h2 id="modal-title" tabindex="0">Contactez-moi</h2>
-            <img src="assets/icons/close.svg" class="close" onclick="closeModal()" alt="Fermer" aria-label="close contact form" tabindex="0" onkeydown="handleCloseKeydown(event)"> <!-- Ajout de l'événement keydown -->
+            <img src="assets/icons/close.svg" class="close" alt="Fermer" aria-label="close contact form" tabindex="0" onclick="closeModal()" onkeydown="handleCloseKeydown(event)">
         </header>
-        <p class="photographer-name-modal" tabindex="0">${photographerName}</p> <!-- Ajout d'attribut tabindex -->
+        <p class="photographer-name-modal" tabindex="0">${photographerName}</p>
         <form id="contact-form" aria-labelledby="modal-title">
             <div>
                 <label for="prenom">Prénom</label>
@@ -40,17 +40,15 @@ function openModal(photographerName) {
 
     modal.innerHTML = modalContent;
 
-   
     focusableElements = modal.querySelectorAll(focusableElementsString);
     firstFocusableElement = focusableElements[0];
     lastFocusableElement = focusableElements[focusableElements.length - 1];
 
-    firstFocusableElement.focus(); 
+    document.getElementById('prenom').focus();
 
    
     modal.addEventListener('keydown', trapFocus);
 
-    
     document.addEventListener('keydown', handleEscapeKey);
 }
 
@@ -58,7 +56,7 @@ function closeModal() {
     const modal = document.getElementById('contact_modal');
     modal.style.display = 'none';
 
-    
+
     modal.removeEventListener('keydown', trapFocus);
     document.removeEventListener('keydown', handleEscapeKey);
 }
@@ -98,6 +96,11 @@ function submitForm() {
     const email = form.email.value;
     const message = form.message.value;
 
+    console.log('Prénom:', prenom);
+    console.log('Nom:', nom);
+    console.log('Email:', email);
+    console.log('Message:', message);
+
     let valid = true;
 
     const nameRegex = /^[a-zA-ZÀ-ÿ\s'-]+$/;
@@ -121,7 +124,6 @@ function submitForm() {
     } else {
         document.getElementById('nom-error').textContent = '';
     }
-    
 
     if (!email) {
         document.getElementById('email-error').textContent = 'Ce champ est requis.';
