@@ -1,6 +1,6 @@
 import { fetchPhotographers, fetchMedia, listenForSpaceToScroll, enableEnterClick } from './functionfetch.js';
 
-let totalLikes = 0; 
+let totalLikes = 0;
 
 async function displayPhotographer(photographerId) {
     const photographers = await fetchPhotographers();
@@ -90,8 +90,7 @@ async function displayPhotographer(photographerId) {
     mainElement.insertBefore(sortContainer, mediaContainer);
 
     const photographerMedia = media.filter(m => m.photographerId === photographerId);
-    totalLikes = photographerMedia.reduce((sum, item) => sum + item.likes, 0); 
-
+    totalLikes = photographerMedia.reduce((sum, item) => sum + item.likes, 0);
 
     displayMedia(photographerMedia, photographer, mainElement);
 
@@ -99,8 +98,26 @@ async function displayPhotographer(photographerId) {
 
     sortSelect.addEventListener('change', function () {
         const sortedMedia = sortMedia(photographerMedia, this.value);
-        displayMedia(sortedMedia, photographer, mainElement); 
+        displayMedia(sortedMedia, photographer, mainElement);
     });
+}
+
+function mediaFactory(mediaItem, photographerId) {
+    let media;
+    if (mediaItem.image) {
+        media = document.createElement('img');
+        media.src = `Photographie/${photographerId}/${mediaItem.image}`;
+        media.alt = mediaItem.title || 'Media overview';
+    } else {
+        media = document.createElement('video');
+        media.src = `Photographie/${photographerId}/${mediaItem.video}`;
+        media.controls = false;  
+        media.alt = mediaItem.title || 'Media overview';
+    }
+    media.classList.add('media');
+    media.setAttribute('aria-label', mediaItem.title || 'Untitled media');
+    media.setAttribute('tabindex', '0');
+    return media;
 }
 
 function displayMedia(mediaItems, photographer, mainElement) {
@@ -114,23 +131,8 @@ function displayMedia(mediaItems, photographer, mainElement) {
         const mediaContent = document.createElement('div');
         mediaContent.classList.add('media-content');
 
-        let media;
-        if (mediaItem.image) {
-            media = document.createElement('img');
-            media.src = `Photographie/${photographerId}/${mediaItem.image}`;
-            media.alt = mediaItem.title || 'Media overview';
-            media.setAttribute('aria-label', mediaItem.title || 'Untitled media');
-            media.setAttribute('tabindex', '0'); 
-        } else {
-            media = document.createElement('video');
-            media.src = `Photographie/${photographerId}/${mediaItem.video}`;
-            media.controls = true;
-            media.alt = mediaItem.title || 'Media overview';
-            media.setAttribute('aria-label', mediaItem.title || 'Untitled media');
-            media.setAttribute('tabindex', '0'); 
-        }
+        const media = mediaFactory(mediaItem, photographer.id);
 
-        media.classList.add('media');
         mediaContent.appendChild(media);
 
         const mediaTitleAndLike = document.createElement('div');
@@ -152,14 +154,14 @@ function displayMedia(mediaItems, photographer, mainElement) {
         likeButton.className = 'like-button';
         likeButton.setAttribute('role', 'img');
         likeButton.setAttribute('aria-label', 'Likes');
-        likeButton.setAttribute('tabindex', '0'); 
+        likeButton.setAttribute('tabindex', '0');
 
         const likeIcon = document.createElement('i');
         likeIcon.className = 'far fa-heart';
         likeButton.appendChild(likeIcon);
 
         likeButton.addEventListener('click', () => toggleLike(likeButton, likeIcon, likeCount));
-        
+
         likeButton.addEventListener('keydown', (event) => {
             if (event.key === 'Enter') {
                 event.preventDefault();
@@ -174,13 +176,21 @@ function displayMedia(mediaItems, photographer, mainElement) {
         mediaContainer.appendChild(mediaElement);
 
         media.addEventListener('click', () => {
-            openLightbox(mediaItems.indexOf(mediaItem), mediaItems, mediaItem.photographerId);
+            if (mediaItem.image) {
+                openLightbox(mediaItems.indexOf(mediaItem), mediaItems, mediaItem.photographerId);
+            } else if (mediaItem.video) {
+                openLightbox(mediaItems.indexOf(mediaItem), mediaItems, mediaItem.photographerId, true); // Passer `true` pour indiquer qu'il s'agit d'une vidéo
+            }
         });
 
         media.addEventListener('keydown', (event) => {
             if (event.key === 'Enter') {
                 event.preventDefault();
-                openLightbox(mediaItems.indexOf(mediaItem), mediaItems, mediaItem.photographerId);
+                if (mediaItem.image) {
+                    openLightbox(mediaItems.indexOf(mediaItem), mediaItems, mediaItem.photographerId);
+                } else if (mediaItem.video) {
+                    openLightbox(mediaItems.indexOf(mediaItem), mediaItems, mediaItem.photographerId, true);
+                }
             }
         });
     });
@@ -202,7 +212,7 @@ function displayMedia(mediaItems, photographer, mainElement) {
 
     const priceDiv = document.createElement('div');
     priceDiv.className = 'price';
-    priceDiv.textContent = `${photographer.price}€ / jour`; 
+    priceDiv.textContent = `${photographer.price}€ / jour`;
 
     likesAndPrice.append(totalLikesDiv, priceDiv);
     mainElement.appendChild(likesAndPrice);
