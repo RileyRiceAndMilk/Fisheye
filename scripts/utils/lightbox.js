@@ -1,4 +1,3 @@
-
 document.querySelectorAll('.media-thumbnail').forEach((media, index) => {
     media.tabIndex = 0;
     media.addEventListener('click', () => openLightbox(index, mediaItems, photographerId));
@@ -18,57 +17,15 @@ function openLightbox(index, mediaItems, photographerId) {
     const lightboxContent = document.createElement('div');
     lightboxContent.className = 'lightbox-content';
 
-    
-    const lightboxMedia = document.createElement(mediaItems[currentIndex].image ? 'img' : 'video');
+    const lightboxMedia = createMediaElement(mediaItems[currentIndex], photographerId);
     lightboxMedia.className = 'lightbox-media';
-    lightboxMedia.src = mediaItems[currentIndex].image
-        ? `Photographie/${photographerId}/${mediaItems[currentIndex].image}`
-        : `Photographie/${photographerId}/${mediaItems[currentIndex].video}`;
-    lightboxMedia.tabIndex = 0; 
-    lightboxMedia.focus(); 
+    lightboxMedia.tabIndex = 0;
+    lightboxMedia.focus();
 
-    if (mediaItems[currentIndex].image) {
-        lightboxMedia.alt = mediaItems[currentIndex].title || 'Media Overview';
-    } else {
-        lightboxMedia.controls = true;
-        lightboxMedia.load();
-        lightboxMedia.setAttribute('aria-label', mediaItems[currentIndex].title || 'Untitled media');
-    }
+    const lightboxClose = createCloseButton();
+    const prevArrow = createNavigationArrow('prev', 'previous image');
+    const nextArrow = createNavigationArrow('next', 'next image');
 
-   
-    const lightboxClose = document.createElement('span');
-    lightboxClose.className = 'lightbox-close';
-    lightboxClose.innerHTML = '&times;';
-    lightboxClose.setAttribute('aria-label', 'close dialog');
-    lightboxClose.tabIndex = 0;
-    lightboxClose.addEventListener('click', closeLightbox);
-    lightboxClose.addEventListener('keydown', (event) => {
-        if (event.key === 'Enter') closeLightbox();
-    });
-
-    
-    const prevArrow = document.createElement('span');
-    prevArrow.className = 'lightbox-prev';
-    prevArrow.innerHTML = '&#10094;';
-    prevArrow.setAttribute('aria-label', 'previous image');
-    prevArrow.tabIndex = 0;
-    prevArrow.addEventListener('click', showPreviousMedia);
-    prevArrow.addEventListener('keydown', (event) => {
-        if (event.key === 'Enter') showPreviousMedia();
-    });
-
-   
-    const nextArrow = document.createElement('span');
-    nextArrow.className = 'lightbox-next';
-    nextArrow.innerHTML = '&#10095;';
-    nextArrow.setAttribute('aria-label', 'next image');
-    nextArrow.tabIndex = 0;
-    nextArrow.addEventListener('click', showNextMedia);
-    nextArrow.addEventListener('keydown', (event) => {
-        if (event.key === 'Enter') showNextMedia();
-    });
-
-   
     lightboxContent.appendChild(lightboxClose);
     lightboxContent.appendChild(prevArrow);
     lightboxContent.appendChild(lightboxMedia);
@@ -77,13 +34,13 @@ function openLightbox(index, mediaItems, photographerId) {
     lightbox.appendChild(lightboxContent);
     document.body.appendChild(lightbox);
 
-    
     const focusableElements = lightbox.querySelectorAll('.lightbox-close, .lightbox-prev, .lightbox-next, .lightbox-media');
     const firstFocusableElement = focusableElements[0];
     const lastFocusableElement = focusableElements[focusableElements.length - 1];
     firstFocusableElement.focus();
 
     lightbox.addEventListener('keydown', trapFocus);
+    document.addEventListener('keydown', handleKeydown);
 
     function trapFocus(e) {
         if (e.key === 'Tab') {
@@ -100,9 +57,6 @@ function openLightbox(index, mediaItems, photographerId) {
             }
         }
     }
-
-   
-    document.addEventListener('keydown', handleKeydown);
 
     function handleKeydown(event) {
         if (event.key === 'Escape') {
@@ -130,25 +84,61 @@ function openLightbox(index, mediaItems, photographerId) {
         updateLightbox();
     }
 
-   
     function updateLightbox() {
-        const newMedia = document.createElement(mediaItems[currentIndex].image ? 'img' : 'video');
+        const newMedia = createMediaElement(mediaItems[currentIndex], photographerId);
         newMedia.className = 'lightbox-media';
-        newMedia.src = mediaItems[currentIndex].image
-            ? `Photographie/${photographerId}/${mediaItems[currentIndex].image}`
-            : `Photographie/${photographerId}/${mediaItems[currentIndex].video}`;
         newMedia.tabIndex = 0;
         newMedia.focus();
 
-        if (mediaItems[currentIndex].image) {
-            newMedia.alt = mediaItems[currentIndex].title || 'Media Overview';
+        const currentMedia = lightbox.querySelector('.lightbox-media');
+        if (currentMedia) {
+            currentMedia.parentNode.replaceChild(newMedia, currentMedia);
+        }
+    }
+
+    function createMediaElement(mediaItem, photographerId) {
+        const mediaElement = mediaItem.image
+            ? document.createElement('img')
+            : document.createElement('video');
+
+        mediaElement.src = mediaItem.image
+            ? `Photographie/${photographerId}/${mediaItem.image}`
+            : `Photographie/${photographerId}/${mediaItem.video}`;
+
+        if (mediaItem.image) {
+            mediaElement.alt = mediaItem.title || 'Media Overview';
         } else {
-            newMedia.controls = true;
-            newMedia.load();
-            newMedia.setAttribute('aria-label', mediaItems[currentIndex].title || 'Untitled media');
+            mediaElement.controls = true;
+            mediaElement.load();
+            mediaElement.setAttribute('aria-label', mediaItem.title || 'Untitled media');
         }
 
-        const currentMedia = document.querySelector('.lightbox-media');
-        currentMedia.parentNode.replaceChild(newMedia, currentMedia);
+        return mediaElement;
     }
-}  
+
+    function createCloseButton() {
+        const closeButton = document.createElement('span');
+        closeButton.className = 'lightbox-close';
+        closeButton.innerHTML = '&times;';
+        closeButton.setAttribute('aria-label', 'close dialog');
+        closeButton.tabIndex = 0;
+        closeButton.addEventListener('click', closeLightbox);
+        closeButton.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') closeLightbox();
+        });
+        return closeButton;
+    }
+
+    function createNavigationArrow(direction, label) {
+        const arrow = document.createElement('span');
+        arrow.className = `lightbox-${direction}`;
+        arrow.innerHTML = direction === 'prev' ? '&#10094;' : '&#10095;';
+        arrow.setAttribute('aria-label', label);
+        arrow.tabIndex = 0;
+        arrow.addEventListener('click', direction === 'prev' ? showPreviousMedia : showNextMedia);
+        arrow.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') direction === 'prev' ? showPreviousMedia() : showNextMedia();
+        });
+        return arrow;
+    }
+} 
