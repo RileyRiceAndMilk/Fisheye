@@ -1,265 +1,195 @@
-import { fetchPhotographers, fetchMedia, listenForSpaceToScroll, enableEnterClick } from './functionfetch.js';
+let allRecipes = []; 
+let activeTags = [];  
 
-let totalLikes = 0;
+class RecipeCard {
+    constructor(recipe) {
+        this.recipe = recipe;
+    }
 
-async function displayPhotographer(photographerId) {
-    const photographers = await fetchPhotographers();
-    const media = await fetchMedia();
-    const photographer = photographers.find(p => p.id === photographerId);
+    static createCard(recipe) {
+        const card = new RecipeCard(recipe);
+        return card.createCardContent();
+    }
 
-    if (!photographer) {
-        console.error("Photographe non trouvé");
+    createCardContent() {
+        const card = document.createElement('article');
+        card.classList.add('recipe-card');
+        card.setAttribute('aria-labelledby', `recipe-${this.recipe.id}`);
+
+        const link = document.createElement('a');
+        link.href = `recipe.html?id=${this.recipe.id}`;
+        link.setAttribute('aria-label', `Voir la recette de ${this.recipe.name}`);
+
+        const imageContainer = document.createElement('div');
+        imageContainer.classList.add('image-container');
+
+        const img = document.createElement('img');
+        img.src = `recipes/${this.recipe.image}`;
+        img.alt = `Image de ${this.recipe.name}`;
+        img.classList.add('recipe-image');
+
+        const timeTag = document.createElement('span');
+        timeTag.classList.add('time-tag');
+        timeTag.textContent = `${this.recipe.time} min`;
+
+        imageContainer.appendChild(img);
+        imageContainer.appendChild(timeTag);
+
+        const title = document.createElement('h2');
+        title.id = `recipe-${this.recipe.id}`;
+        title.textContent = this.recipe.name;
+
+        const time = document.createElement('p');
+        time.classList.add('recipe-time');
+        time.textContent = `⏱️ Temps: ${this.recipe.time} minutes`;
+
+        const description = document.createElement('p');
+        description.classList.add('recipe-description');
+        description.textContent = this.recipe.description;
+
+        const ingredientsList = document.createElement('ul');
+        ingredientsList.classList.add('ingredients-list');
+        this.recipe.ingredients.forEach(ingredient => {
+            const ingredientItem = document.createElement('li');
+            const ingredientText = `${ingredient.quantity ? ingredient.quantity : ''} ${ingredient.unit ? ingredient.unit : ''} ${ingredient.ingredient}`;
+            ingredientItem.textContent = ingredientText.trim();
+            ingredientsList.appendChild(ingredientItem);
+        });
+
+        link.appendChild(imageContainer);
+        link.appendChild(title);
+        link.appendChild(time);
+        link.appendChild(description);
+        link.appendChild(ingredientsList);
+
+        card.appendChild(link);
+
+        return card;
+    }
+}
+
+function createIngredientFilter(recipes) {
+    const ingredientSelect = document.getElementById('ingredient-filter');
+    const ingredients = new Set();
+
+    recipes.forEach(recipe => {
+        recipe.ingredients.forEach(ingredient => {
+            ingredients.add(ingredient.ingredient);
+        });
+    });
+
+    ingredients.forEach(ingredient => {
+        const option = document.createElement('option');
+        option.value = ingredient;
+        option.textContent = ingredient;
+        ingredientSelect.appendChild(option);
+    });
+
+    ingredientSelect.addEventListener('change', (event) => {
+        const selectedIngredient = event.target.value;
+        if (selectedIngredient) {
+            addTag(selectedIngredient);
+        }
+    });
+}
+
+function filterAndDisplayRecipes(recipes) {
+    const recipeSection = document.querySelector('.recipe-section');
+
+    const filteredRecipes = recipes.filter(recipe => {
+        return activeTags.every(tag => 
+            recipe.ingredients.some(ingredient => ingredient.ingredient === tag)
+        );
+    });
+
+    displayRecipes(filteredRecipes, recipeSection);
+}
+
+function displayRecipes(recipes, recipeSection) {
+    recipeSection.innerHTML = '';  
+
+    const fragment = document.createDocumentFragment();
+
+    recipes.forEach(recipe => {
+        const card = RecipeCard.createCard(recipe);
+        fragment.appendChild(card);
+    });
+
+    recipeSection.appendChild(fragment);
+}
+
+function addTag(selectedIngredient) {
+    if (!activeTags.includes(selectedIngredient)) {
+        activeTags.push(selectedIngredient);
+        updateTags();
+    }
+}
+
+function removeTag(tag) {
+    activeTags = activeTags.filter(activeTag => activeTag !== tag);
+    updateTags();
+}
+
+function updateTags() {
+    const tagContainer = document.getElementById('selected-tags');
+    tagContainer.innerHTML = ''; 
+
+    activeTags.forEach(tag => {
+        const tagElement = document.createElement('span');
+        tagElement.classList.add('ingredient-tag');
+        tagElement.textContent = tag;
+
+        const removeButton = document.createElement('button');
+        removeButton.textContent = '❌';
+        removeButton.classList.add('remove-tag');
+        removeButton.addEventListener('click', () => {
+            removeTag(tag);
+            filterAndDisplayRecipes(allRecipes); 
+        });
+
+        tagElement.appendChild(removeButton);
+        tagContainer.appendChild(tagElement);
+    });
+
+
+    filterAndDisplayRecipes(allRecipes);
+}
+
+async function loadRecipes() {
+    const recipeSection = document.querySelector('.recipe-section'); 
+
+    if (!recipeSection) {
+        console.error("L'élément 'recipe-section' est introuvable.");
         return;
     }
 
-    const photographerHeader = document.querySelector('.photograph-header');
-    photographerHeader.innerHTML = '';
+    try {
+        const response = await fetch('./recipes.json');
 
-    const headerContent = document.createElement('div');
-    headerContent.className = 'header-content';
+        if (!response.ok) {
+            throw new Error(`Erreur de réseau: ${response.statusText}`);
+        }
 
-    const photographerInfo = document.createElement('div');
-    photographerInfo.className = 'photographer-info';
+        const data = await response.json();
 
-    const photographerName = document.createElement('h2');
-    photographerName.className = 'photographer-name';
-    photographerName.textContent = photographer.name;
-    photographerName.setAttribute('tabindex', '2');
-
-    const location = document.createElement('h3');
-    location.className = 'location';
-    location.textContent = `${photographer.city}, ${photographer.country}`;
-    location.setAttribute('tabindex', '3');
-
-    const tagline = document.createElement('h3');
-    tagline.className = 'photographer-tagline';
-    tagline.textContent = photographer.tagline;
-    tagline.setAttribute('tabindex', '3');
-
-    const contactButton = document.createElement('button');
-    contactButton.id = 'contact-button';
-    contactButton.className = 'contact_button';
-    contactButton.textContent = 'Contactez-moi';
-    contactButton.setAttribute('aria-label', 'Ouvrir le formulaire de contact');
-    contactButton.setAttribute('tabindex', '4');
-
-    photographerInfo.append(photographerName, location, tagline);
-    headerContent.append(photographerInfo, contactButton);
-    photographerHeader.appendChild(headerContent);
-
-    const portraitImg = document.createElement('img');
-    portraitImg.className = 'photographer-portrait';
-    portraitImg.src = `Photographie/Photographers ID Photos/${photographer.portrait}`;
-    portraitImg.alt = `Portrait de ${photographer.name}`;
-    photographerHeader.appendChild(portraitImg);
-    portraitImg.setAttribute('tabindex', '5');
-
-    const mainElement = document.getElementById('main');
-
-    const mediaContainer = document.createElement('div');
-    mediaContainer.classList.add('media_section');
-    mainElement.appendChild(mediaContainer);
-
-    const sortContainer = document.createElement('div');
-    sortContainer.classList.add('sort-container');
-
-    const sortLabel = document.createElement('span');
-    sortLabel.textContent = 'Trier par: ';
-    sortLabel.setAttribute('aria-label', 'Trier par');
-    sortLabel.setAttribute('tabindex', '7');
-
-    const sortSelect = document.createElement('select');
-    sortSelect.id = 'sortOptions';
-    sortSelect.setAttribute('aria-label', 'Options de tri');
-    sortSelect.setAttribute('tabindex', '8');
-
-    const sortOptions = [
-        { value: 'date', text: 'Date' },
-        { value: 'nom', text: 'Nom' },
-        { value: 'popularite', text: 'Popularité' },
-    ];
-
-    sortOptions.forEach(option => {
-        const opt = document.createElement('option');
-        opt.value = option.value;
-        opt.textContent = option.text;
-        sortSelect.appendChild(opt);
-    });
-
-    sortContainer.append(sortLabel, sortSelect);
-    mainElement.insertBefore(sortContainer, mediaContainer);
-
-    const photographerMedia = media.filter(m => m.photographerId === photographerId);
-    totalLikes = photographerMedia.reduce((sum, item) => sum + item.likes, 0);
-
-    displayMedia(photographerMedia, photographer, mainElement);
-
-    contactButton.addEventListener('click', () => openModal(photographer.name));
-
-    sortSelect.addEventListener('change', function () {
-        const sortedMedia = sortMedia(photographerMedia, this.value);
-        displayMedia(sortedMedia, photographer, mainElement);
-    });
-}
-
-function mediaFactory(mediaItem, photographerId) {
-    let media;
-    if (mediaItem.image) {
-        media = document.createElement('img');
-        media.src = `Photographie/${photographerId}/${mediaItem.image}`;
-        media.alt = mediaItem.title || 'Media overview';
-    } else {
-        media = document.createElement('video');
-        media.src = `Photographie/${photographerId}/${mediaItem.video}`;
-        media.controls = false;  
-        media.alt = mediaItem.title || 'Media overview';
-    }
-    media.classList.add('media');
-    media.setAttribute('aria-label', mediaItem.title || 'Untitled media');
-    media.setAttribute('tabindex', '0');
-    return media;
-}
-
-function displayMedia(mediaItems, photographer, mainElement) {
-    const mediaContainer = document.querySelector('.media_section');
-    mediaContainer.innerHTML = '';
-
-    mediaItems.forEach(mediaItem => {
-        const mediaElement = document.createElement('div');
-        mediaElement.classList.add('media-item');
-
-        const mediaContent = document.createElement('div');
-        mediaContent.classList.add('media-content');
-
-        const media = mediaFactory(mediaItem, photographer.id);
-
-        mediaContent.appendChild(media);
-
-        const mediaTitleAndLike = document.createElement('div');
-        mediaTitleAndLike.className = 'media-title-and-like';
-        mediaTitleAndLike.setAttribute('tabindex', '0');
-
-        const mediaTitle = document.createElement('div');
-        mediaTitle.className = 'media-title';
-        mediaTitle.textContent = mediaItem.title;
-
-        const mediaLikes = document.createElement('div');
-        mediaLikes.className = 'media-likes';
-
-        const likeCount = document.createElement('span');
-        likeCount.className = 'like-count';
-        likeCount.textContent = mediaItem.likes;
-
-        const likeButton = document.createElement('span');
-        likeButton.className = 'like-button';
-        likeButton.setAttribute('role', 'img');
-        likeButton.setAttribute('aria-label', 'Likes');
-        likeButton.setAttribute('tabindex', '0');
-
-        const likeIcon = document.createElement('i');
-        likeIcon.className = 'far fa-heart';
-        likeButton.appendChild(likeIcon);
-
-        likeButton.addEventListener('click', () => toggleLike(likeButton, likeIcon, likeCount));
-
-        likeButton.addEventListener('keydown', (event) => {
-            if (event.key === 'Enter') {
-                event.preventDefault();
-                toggleLike(likeButton, likeIcon, likeCount);
-            }
-        });
-
-        mediaLikes.append(likeCount, likeButton);
-        mediaTitleAndLike.append(mediaTitle, mediaLikes);
-        mediaContent.appendChild(mediaTitleAndLike);
-        mediaElement.appendChild(mediaContent);
-        mediaContainer.appendChild(mediaElement);
-
-        media.addEventListener('click', () => {
-            if (mediaItem.image) {
-                openLightbox(mediaItems.indexOf(mediaItem), mediaItems, mediaItem.photographerId);
-            } else if (mediaItem.video) {
-                openLightbox(mediaItems.indexOf(mediaItem), mediaItems, mediaItem.photographerId, true); // Passer `true` pour indiquer qu'il s'agit d'une vidéo
-            }
-        });
-
-        media.addEventListener('keydown', (event) => {
-            if (event.key === 'Enter') {
-                event.preventDefault();
-                if (mediaItem.image) {
-                    openLightbox(mediaItems.indexOf(mediaItem), mediaItems, mediaItem.photographerId);
-                } else if (mediaItem.video) {
-                    openLightbox(mediaItems.indexOf(mediaItem), mediaItems, mediaItem.photographerId, true);
-                }
-            }
-        });
-    });
-
-    const likesAndPrice = document.createElement('div');
-    likesAndPrice.className = 'likes-and-price';
-    likesAndPrice.setAttribute('tabindex', '6');
-
-    const totalLikesDiv = document.createElement('div');
-    totalLikesDiv.className = 'total-likes';
-
-    const likesCount = document.createElement('span');
-    likesCount.id = 'total-likes-count';
-    likesCount.textContent = totalLikes;
-
-    const heartIcon = document.createElement('i');
-    heartIcon.className = 'fas fa-heart';
-    totalLikesDiv.append(likesCount, heartIcon);
-
-    const priceDiv = document.createElement('div');
-    priceDiv.className = 'price';
-    priceDiv.textContent = `${photographer.price}€ / jour`;
-
-    likesAndPrice.append(totalLikesDiv, priceDiv);
-    mainElement.appendChild(likesAndPrice);
-}
-
-function toggleLike(likeButton, likeIcon, likeCount) {
-    const liked = likeIcon.classList.contains('fas');
-    let likeCountValue = parseInt(likeCount.textContent, 10);
-
-    if (!liked) {
-        likeCountValue++;
-        likeIcon.classList.remove('far');
-        likeIcon.classList.add('fas');
-        totalLikes++;
-    } else {
-        likeCountValue--;
-        likeIcon.classList.remove('fas');
-        likeIcon.classList.add('far');
-        totalLikes--;
-    }
-
-    likeCount.textContent = likeCountValue;
-    updateTotalLikes(totalLikes);
-    likeButton.setAttribute('aria-label', liked ? 'Ne plus aimer ce média' : 'Aimer ce média');
-}
-
-function updateTotalLikes(likes) {
-    const totalLikesCount = document.getElementById('total-likes-count');
-    totalLikesCount.textContent = likes;
-}
-
-function sortMedia(mediaItems, criteria) {
-    switch (criteria) {
-        case 'date':
-            return mediaItems.sort((a, b) => new Date(b.date) - new Date(a.date));
-        case 'nom':
-            return mediaItems.sort((a, b) => a.title.localeCompare(b.title));
-        case 'popularite':
-            return mediaItems.sort((a, b) => b.likes - a.likes);
-        default:
-            return mediaItems;
+        if (data && Array.isArray(data.recipes)) {
+            allRecipes = data.recipes;  
+            createIngredientFilter(data.recipes);
+            displayRecipes(data.recipes, recipeSection);
+        } else {
+            console.error('Données des recettes non trouvées ou format invalide');
+            recipeSection.innerHTML = '<p>Pas de recettes disponibles.</p>';
+        }
+    } catch (error) {
+        console.error('Erreur lors du chargement des recettes:', error);
+        recipeSection.innerHTML = '<p>Erreur de chargement des recettes. Essayez plus tard.</p>';
     }
 }
 
-const params = new URLSearchParams(window.location.search);
-const photographerId = parseInt(params.get("id"));
-displayPhotographer(photographerId);
+document.addEventListener('DOMContentLoaded', () => {
+    loadRecipes();
+});
+
 
 
 
